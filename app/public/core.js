@@ -12,7 +12,7 @@ function selectClient(clientId) {
       }
     },
     success: function(data) {
-      var clientData = JSON.parse(data);
+      var clientData = data;
 
       var client = clientData['client'];
       $("#client\\.id").html(client.id);
@@ -25,6 +25,34 @@ function selectClient(clientId) {
       $("#client\\.firstcontact").html(client.firstcontact);
       $("#client\\.firstresponse").html(client.firstresponse);
       $("#client\\.solicited").html(String(!!+client.solicited));
+
+      return false;
+    },
+    error: function(data) {
+    }
+  });
+
+  $.ajax({
+    url: "appointments/" + clientId,
+    statusCode: {
+      400: function(data) {
+        $("#outcome").html(data.responseText);
+      }
+    },
+    success: function(data) {
+      var tr;
+      var appointmentData = data['appointments'];
+      $("#appointmentDetailTable > tbody").empty();
+      for (var i = 0; i < appointmentData.length; i++) {
+          tr = $('<tr/>');
+          tr.append("<td>" + appointmentData[i].topic_id + "</td>");
+          tr.append("<td>" + appointmentData[i].starttime + "</td>");
+          tr.append("<td>" + appointmentData[i].duration + "</td>");
+          tr.append("<td>" + appointmentData[i].rate + "</td>");
+          tr.append("<td>" + appointmentData[i].billingpct + "</td>");
+          tr.append("<td>" + appointmentData[i].paid + "</td>");
+          $("#appointmentDetailTable").append(tr);
+      }
 
       return false;
     },
