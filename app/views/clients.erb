@@ -1,3 +1,6 @@
+<script type="text/javascript">
+    var topics = <%= @topics.to_json %>;
+</script>
   <table>
     <tr>
       <td>
@@ -69,6 +72,23 @@
                   <th style="align=center;">Billing %</td>
                   <th style="align=center;">Date paid</td>
                 </tr>
+              <tr>
+                <form id="appointmentDetail">
+                  <input type="hidden" name="client_id" />
+                  <td style="align:left;">
+                    <select name="topic_id" >
+                      <% @topics.each do |topic| %>
+                        <option value="<%= topic.id %>" <%= topic.id == 2 ? "SELECTED" : "" %>><%= topic.name %></option>
+                      <% end %>
+                    </select>
+                  </td>
+                  <td style="align:left;"><input type="datetime-local" name="starttime" /></td>
+                  <td style="align:left;"><input type="number" name="duration" min="10" max="600" size="5" /></td>
+                  <td style="align:left;"><input type="number" name="rate" min="10" max="600" size="5" /></td>
+                  <td style="align:left;"><input type="number" name="billingpct" min="0.75" max="1.00" step="0.05" size="5" /></td>
+                  <td style="align:left;"><input type="button" value="Save" onclick="saveAppointment()" /></td>
+                </form>
+              </tr>
             </thead>
             </table>
         </div>
