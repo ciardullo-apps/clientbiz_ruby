@@ -1,97 +1,25 @@
 <script type="text/javascript">
     var topics = <%= @topics.to_json %>;
 </script>
-  <table>
-    <tr>
-      <td>
-        <div>
-          <table>
-            <% @clients.each do |customer| %>
-            <tr>
-              <td><a href onclick="selectClient(<%= customer.id %>); return false;"><%= customer.firstname %></a></td>
-            </tr>
-            <% end %>
-          </table>
-        </div>
-      </td>
-      <td style="vertical-align:top;">
-        <div id="clientDetail">
-            <table>
-              <tr>
-                <td style="align=right;">Client ID:</td>
-                <td style="align:left;"><span id="client.id"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">First name:</td>
-                <td style="align:left;"><span id="client.firstname"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">Last name:</td>
-                <td style="align:left;"><span id="client.lastname"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">Contact name:</td>
-                <td style="align:left;"><span id="client.contactname"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">City:</td>
-                <td style="align:left;"><span id="client.city"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">State:</td>
-                <td style="align:left;"><span id="client.state"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">Timezone:</td>
-                <td style="align:left;"><span id="client.timezone"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">First contacted:</td>
-                <td style="align:left;"><span id="client.firstcontact"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">First responded:</td>
-                <td style="align:left;"><span id="client.firstresponse"></span></td>
-              </tr>
-              <tr>
-                <td style="align=right;">Solicited:</td>
-                <td style="align:left;"><span id="client.solicited"></span></td>
-              </tr>
-            </table>
-        </div>
-      </td>
-      <td style="vertical-align:top;">
-        <div id="appointmentDetail">
-            <table id="appointmentDetailTable">
-              <thead>
-                <tr>
-                  <th style="align=center;">Topic ID</td>
-                  <th style="align=center;">Start time</td>
-                  <th style="align=center;">Duration</td>
-                  <th style="align=center;">Hourly Rate</td>
-                  <th style="align=center;">Billing %</td>
-                  <th style="align=center;">Date paid</td>
-                </tr>
-              <tr>
-                <form id="appointmentDetail">
-                  <input type="hidden" name="client_id" />
-                  <td style="align:left;">
-                    <select name="topic_id" >
-                      <% @topics.each do |topic| %>
-                        <option value="<%= topic.id %>" <%= topic.id == 2 ? "SELECTED" : "" %>><%= topic.name %></option>
-                      <% end %>
-                    </select>
-                  </td>
-                  <td style="align:left;"><input type="datetime-local" name="starttime" /></td>
-                  <td style="align:left;"><input type="number" name="duration" min="10" max="600" size="5" /></td>
-                  <td style="align:left;"><input type="number" name="rate" min="10" max="600" size="5" /></td>
-                  <td style="align:left;"><input type="number" name="billingpct" min="0.75" max="1.00" step="0.05" size="5" /></td>
-                  <td style="align:left;"><input type="button" value="Save" onclick="saveAppointment()" /></td>
-                </form>
-              </tr>
-            </thead>
-            </table>
-        </div>
-      </td>
-    </tr>
+<div class="container">
+  <div id="clientList" class="fixed-narrow-overflow">
+    <table>
+      <% @clients.each do |customer| %>
+      <tr>
+        <td><a href onclick="selectClient(<%= customer.id %>); return false;"><%= customer.firstname %></a></td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+  <div class="fixed-wide">
+    <%= erb :clientdetail %>
+  </div>
+  <div>
+    <div class="fixed-overflow">
+      <%= erb :appointmentdetail %>
+    </div>
+    <div>
+      <%= erb :receivables %>
+    </div>
+  </div>
   </table>
