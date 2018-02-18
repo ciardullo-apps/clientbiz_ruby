@@ -1,1 +1,5 @@
 *.erb linguist-language=Ruby
+
+# Bootstrap css and js
+- (^|/)bootstrap([^.]*)(\.min)\.(js|css)$
+- (^|/)bootstrap([^.]*)\.(js|css)$

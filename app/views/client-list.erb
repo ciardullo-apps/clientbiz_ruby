@@ -1,0 +1,47 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h1 class="h2">Clients</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group mr-2">
+      <button class="btn btn-sm btn-outline-secondary">Share</button>
+      <button class="btn btn-sm btn-outline-secondary">Export</button>
+    </div>
+    <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+      <span data-feather="calendar"></span>
+      Recent
+    </button>
+  </div>
+</div>
+
+<script type="text/javascript">
+    var topics = <%= @topics.to_json %>;
+</script>
+<div id="clientList" class="table-responsive">
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>First</th>
+        <th>Last</th>
+        <th>Contact</th>
+        <th>Timezone</th>
+        <th>Solicited</th>
+        <th># Appointments</th>
+        <th>Last Appointment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @clients.each do |customer| %>
+      <tr>
+        <td><%= customer.id %></a></td>
+        <td><a href onclick="selectClient(<%= customer.id %>); return false;"><%= customer.firstname %></a></td>
+        <td><%= customer.lastname %></a></td>
+        <td><%= customer.contactname %></a></td>
+        <td><%= customer.timezone %></a></td>
+        <td><%= customer.solicited %></a></td>
+        <td><%= customer.numappts %></a></td>
+        <td><%= customer.lastapptdate %></a></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

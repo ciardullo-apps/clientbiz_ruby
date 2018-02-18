@@ -29,15 +29,24 @@ class Topic < ActiveRecord::Base
   has_many :appointments, :foreign_key => "topic_id"
 end
 
+class ClientView < ActiveRecord::Base
+  self.table_name = "clientview"
+  has_many :appointments, :foreign_key => "client_id"
+end
+
 class App < Sinatra::Application
 end
 
 get '/' do
-  # @clients = Clientele.all
-  @clients = Clientele.order(firstresponse: :desc, firstname: :asc, lastname: :asc)
+  erb :layout
+end
+
+get '/client' do
+  @clients = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
   @topics = Topic.order(id: :asc);
   @appointments = {}
-  erb :clients
+
+  erb :"client-list", :layout => false, :content_type => "text/html", :status => 200
 end
 
 get '/client/:clientId' do
@@ -48,9 +57,12 @@ get '/client/:clientId' do
 end
 
 get '/appointments/:clientId' do
-  content_type :json
-  appointmentData = Appointment.where("client_id = ?", params[:clientId])
-  { :appointments => appointmentData }.to_json
+  @topics = Topic.order(id: :asc);
+  @appointments = Appointment.where("client_id = ?", params[:clientId])
+  @client = Clientele.find(params[:clientId])
+
+  erb :"appointment-list", :layout => false, :content_type => "text/html", :status => 200
+  # { :appointments => appointmentData }.to_json
 end
 
 post '/saveAppointment' do
