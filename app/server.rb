@@ -65,6 +65,24 @@ get '/appointments/:clientId' do
   # { :appointments => appointmentData }.to_json
 end
 
+get '/newAppointment' do
+  @clients = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  @topics = Topic.order(id: :asc);
+
+  # Advance to next hour
+  @formData = { }
+  @formData['nextHour'] = Time.new.change(min: 0).advance(hours: 1).iso8601.slice(0,16)
+  @formData['duration'] = 60
+  @formData['rate'] = 60
+  @formData['billingpct'] = 0.75
+
+  # nextHour.setMinutes(0);
+  # nextHour.setHours(nextHour.getHours() + 1);
+
+  erb :"create-appointment", :layout => false, :content_type => "text/html", :status => 200
+  # { :appointments => appointmentData }.to_json
+end
+
 post '/saveAppointment' do
   # process the params however you want
   puts params

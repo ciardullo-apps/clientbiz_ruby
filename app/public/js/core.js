@@ -112,6 +112,34 @@ function getPaid(appointmentId) {
 
 }
 
+function newAppointment() {
+  $.ajax({
+    url: "newAppointment",
+    statusCode: {
+      400: function(data) {
+        $("#outcome").html(data.responseText);
+      }
+    },
+    success: function(data) {
+      $("#main-view").html(data);
+
+      // Advance to next hour
+      var date = new Date();
+      var nextHour = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+      nextHour.setMinutes(0);
+      nextHour.setHours(nextHour.getHours() + 1);
+
+      return false;
+    },
+    error: function(data) {
+      console.log("ERROR");
+      console.log(data);
+    }
+  });
+
+  return false;
+}
+
 
 $( document ).ready(function() {
   $.ajax({
