@@ -50,28 +50,12 @@ function loadReceivables() {
       }
     },
     success: function(data) {
-      var tr;
-      var receivablesData = data['receivables'];
-      $("#receivablesDetailTable > tbody").empty();
-
-      for (var i = 0; i < receivablesData.length; i++) {
-          tr = $('<tr/>');
-          tr.append("<td>" + receivablesData[i].id + "</td>");
-          tr.append("<td>" + receivablesData[i].firstname + "</td>");
-          tr.append("<td>" + receivablesData[i].lastname + "</td>");
-          tr.append("<td>" + receivablesData[i].topicname + "</td>");
-          tr.append("<td>" + new Date(receivablesData[i].starttime).toLocaleString("en-US") + "</td>");
-          tr.append("<td>" + receivablesData[i].duration + "</td>");
-          tr.append("<td>" + Math.trunc(receivablesData[i].rate) + "</td>");
-          tr.append("<td>" + receivablesData[i].billingpct + "</td>");
-          tr.append("<td> $ " + (receivablesData[i].rate * (receivablesData[i].duration / 60) * receivablesData[i].billingpct).toFixed(2) + "</td>");
-          tr.append("<td><a href onclick=\"getPaid(" + receivablesData[i].id + "); return false;\">Mark Paid</td>");
-          $("#receivablesDetailTable").append(tr);
-      }
+      $("#main-view").html(data);
 
       return false;
     },
     error: function(data) {
+      console.log(data);
     }
   });
 
@@ -97,19 +81,19 @@ function saveAppointment() {
 function getPaid(appointmentId) {
   var updateAppointmentData = {};
   updateAppointmentData["id"] = appointmentId;
-  updateAppointmentData["paid"] = $('#datePicker').val();
+  updateAppointmentData["paid"] = $('#paiddate').val();
 
   $.ajax({
       method: 'POST',
-      url: '/updateAppointment',
+      url: '/updatePaidDate',
       data: updateAppointmentData,
       dataType: 'json'
     })
     .done(function(data) {
       console.log(data);
-      // loadAppointmentsViaAjax($("#appointmentDetail input[name=client_id]").val());
   });
 
+  return false;
 }
 
 function newAppointment() {
@@ -122,13 +106,6 @@ function newAppointment() {
     },
     success: function(data) {
       $("#main-view").html(data);
-
-      // Advance to next hour
-      var date = new Date();
-      var nextHour = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-      nextHour.setMinutes(0);
-      nextHour.setHours(nextHour.getHours() + 1);
-
       return false;
     },
     error: function(data) {
@@ -139,47 +116,3 @@ function newAppointment() {
 
   return false;
 }
-
-
-$( document ).ready(function() {
-  $.ajax({
-    url: "receivables",
-    statusCode: {
-      400: function(data) {
-        $("#outcome").html(data.responseText);
-      }
-    },
-    success: function(data) {
-      var tr;
-      var receivablesData = data['receivables'];
-      $("#receivablesDetailTable > tbody").empty();
-
-      for (var i = 0; i < receivablesData.length; i++) {
-          tr = $('<tr/>');
-          tr.append("<td>" + receivablesData[i].id + "</td>");
-          tr.append("<td>" + receivablesData[i].firstname + "</td>");
-          tr.append("<td>" + receivablesData[i].lastname + "</td>");
-          tr.append("<td>" + receivablesData[i].topicname + "</td>");
-          tr.append("<td>" + new Date(receivablesData[i].starttime).toLocaleString("en-US") + "</td>");
-          tr.append("<td>" + receivablesData[i].duration + "</td>");
-          tr.append("<td>" + Math.trunc(receivablesData[i].rate) + "</td>");
-          tr.append("<td>" + receivablesData[i].billingpct + "</td>");
-          tr.append("<td> $ " + (receivablesData[i].rate * (receivablesData[i].duration / 60) * receivablesData[i].billingpct).toFixed(2) + "</td>");
-          tr.append("<td><a href onclick=\"getPaid(" + receivablesData[i].id + "); return false;\">Mark Paid</td>");
-          $("#receivablesDetailTable").append(tr);
-      }
-
-      return false;
-    },
-    error: function(data) {
-    }
-  });
-
-  // Advance to next hour
-  var date = new Date();
-  var nextHour = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-  nextHour.setMinutes(0);
-  nextHour.setHours(nextHour.getHours() + 1);
-  $('#datePicker').val(nextHour.toJSON().slice(0,10));
-
-});

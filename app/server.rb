@@ -96,23 +96,23 @@ post '/saveAppointment' do
 end
 
 get '/receivables' do
-  content_type :json
-  receivablesData = Appointment.select("clientele.firstname, clientele.lastname, topic.name as topicname, #{Appointment.table_name}.*").joins(:clientele).joins(:topic).where('paid is null')
-  { :receivables => receivablesData }.to_json
+  @receivables = Appointment.select("clientele.firstname, clientele.lastname, topic.name as topicname, #{Appointment.table_name}.*").joins(:clientele).joins(:topic).where('paid is null')
+  @paiddate = Time.new.iso8601.slice(0,10)
+
+  erb :"receivables", :layout => false, :content_type => "text/html", :status => 200
 end
 
-post '/updateAppointment' do
+post '/updatePaidDate' do
   # process the params however you want
   puts params
   # Sinatra uses splat and captures for more complicated routes, remove from params hash
   params.delete('captures')
 
-  content_type :json
   appointment = Appointment.find(params[:id])
   appointment.paid = params[:paid]
   appointment.save
 
-  status 200
-  content_type 'application/json'
+  status :ok
+  content_type :json
   { :rowsAffected => 1 }.to_json
 end
