@@ -34,6 +34,12 @@ class ClientView < ActiveRecord::Base
   has_many :appointments, :foreign_key => "client_id"
 end
 
+class ClientTopic < ActiveRecord::Base
+  self.table_name = "clienttopic"
+  has_many :clientele, :foreign_key => "client_id"
+  has_many :topic, :foreign_key => "topic_id"
+end
+
 class App < Sinatra::Application
 end
 
@@ -115,4 +121,37 @@ post '/updatePaidDate' do
   status :ok
   content_type :json
   { :rowsAffected => 1 }.to_json
+end
+
+get '/newClient' do
+  @topics = Topic.order(id: :asc);
+
+  @formData = { }
+  @formData['topicId'] = 2
+  @formData['firstcontact'] = Time.new.change(min: 0).advance(hours: 1).iso8601.slice(0,16)
+  @formData['firstresponse'] = @formData['firstcontact']
+  @formData['solicited'] = 1
+
+  erb :"create-client", :layout => false, :content_type => "text/html", :status => 200
+  # { :appointments => appointmentData }.to_json
+end
+
+post '/saveClient' do
+  # process the params however you want
+  puts params
+  # # Sinatra uses splat and captures for more complicated routes, remove from params hash
+  params.delete('captures')
+  topicId = params['topic_id'];
+  params.delete('topic_id')
+  clientId = 0
+
+  ActiveRecord::Base.transaction do
+    newClient = Clientele.create(params)
+    clientId = newClient.id
+    newClientTopic = ClientTopic.create( { 'client_id' => clientId, 'topic_id' => topicId })
+  end
+
+  status 200
+  content_type 'application/json'
+  { :clientId => clientId }.to_json
 end

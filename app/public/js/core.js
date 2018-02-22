@@ -116,3 +116,36 @@ function newAppointment() {
 
   return false;
 }
+
+function newClient() {
+  $.ajax({
+    url: "newClient",
+    statusCode: {
+      400: function(data) {
+        $("#outcome").html(data.responseText);
+      }
+    },
+    success: function(data) {
+      $("#main-view").html(data);
+      return false;
+    },
+    error: function(data) {
+      console.log("ERROR");
+      console.log(data);
+    }
+  });
+
+  return false;
+}
+
+function saveClient() {
+    $.ajax({
+        method: 'POST',
+        url: '/saveClient',
+        data: $('form').serialize(), // pass fields as strings
+        dataType: 'json'
+      })
+      .done(function(data) {
+        console.log(data);
+      });
+}
