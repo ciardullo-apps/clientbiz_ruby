@@ -33,12 +33,12 @@
       <% @clients.each do |customer| %>
       <tr>
         <td><%= customer.id %></a></td>
-        <td><a href onclick="selectClient(<%= customer.id %>); return false;"><%= customer.firstname %></a></td>
+        <td><a href onclick="loadClientData(<%= customer.id %>); return false;"><%= customer.firstname %></a></td>
         <td><%= customer.lastname %></a></td>
         <td><%= customer.contactname %></a></td>
         <td><%= customer.timezone %></a></td>
         <td><%= customer.solicited %></a></td>
-        <td><%= customer.numappts %></a></td>
+        <td><a href onclick="loadAppointments(<%= customer.id %>); return false;"><%= customer.numappts %></a></td>
         <td><%= customer.lastapptdate %></a></td>
       </tr>
       <% end %>

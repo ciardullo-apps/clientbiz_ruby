@@ -1,4 +1,4 @@
-function selectClient(clientId) {
+function loadAppointments(clientId) {
   $.ajax({
     url: "appointments/" + clientId,
     statusCode: {
@@ -17,6 +17,28 @@ function selectClient(clientId) {
     }
   });
 
+}
+
+function loadClientData(clientId) {
+  $.ajax({
+    url: "client/" + clientId,
+    statusCode: {
+      400: function(data) {
+        $("#outcome").html(data.responseText);
+      }
+    },
+    success: function(data) {
+      $("#main-view").html(data);
+
+      return false;
+    },
+    error: function(data) {
+      console.log("ERROR");
+      console.log(data);
+    }
+  });
+
+  return false;
 }
 
 function loadClients() {

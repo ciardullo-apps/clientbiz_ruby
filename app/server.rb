@@ -56,10 +56,14 @@ get '/client' do
 end
 
 get '/client/:clientId' do
-  content_type :json
+  @topics = Topic.order(id: :asc);
+
   clientData = Clientele.find(params[:clientId])
+  @formData = clientData.attributes
+  puts @formData
+
   @clientSelected = true
-  { :client => clientData }.to_json
+  erb :"edit-client", :layout => false, :content_type => "text/html", :status => 200
 end
 
 get '/appointments/:clientId' do
@@ -128,11 +132,11 @@ get '/newClient' do
 
   @formData = { }
   @formData['topicId'] = 2
-  @formData['firstcontact'] = Time.new.change(min: 0).advance(hours: 1).iso8601.slice(0,16)
+  @formData['firstcontact'] = Time.new.change(min: 0).advance(hours: 1)
   @formData['firstresponse'] = @formData['firstcontact']
   @formData['solicited'] = 1
 
-  erb :"create-client", :layout => false, :content_type => "text/html", :status => 200
+  erb :"edit-client", :layout => false, :content_type => "text/html", :status => 200
   # { :appointments => appointmentData }.to_json
 end
 
@@ -143,12 +147,34 @@ post '/saveClient' do
   params.delete('captures')
   topicId = params['topic_id'];
   params.delete('topic_id')
-  clientId = 0
+  clientId = params['client_id']
 
-  ActiveRecord::Base.transaction do
-    newClient = Clientele.create(params)
-    clientId = newClient.id
-    newClientTopic = ClientTopic.create( { 'client_id' => clientId, 'topic_id' => topicId })
+  if clientId.empty? then
+    ActiveRecord::Base.transaction do
+      params.delete('client_id')
+      newClient = Clientele.create(params)
+      clientId = newClient.id
+      newClientTopic = ClientTopic.create( { 'client_id' => clientId, 'topic_id' => topicId })
+    end
+  else
+    ActiveRecord::Base.transaction do
+      clientData = Clientele.find(clientId)
+      clientData['firstname'] = params['firstname']
+      clientData['lastname'] = params['lastname']
+      clientData['contactname'] = (params['contactname'].empty? ? nil : params['contactname'])
+      clientData['city'] = params['city']
+      clientData['state'] = params['state']
+      clientData['timezone'] = params['timezone']
+      if params.key?("solicited")
+        clientData['solicited'] = "true"
+        clientData['firstcontact'] = params['firstcontact']
+      else
+        clientData['solicited'] = "false"
+        clientData['firstcontact'] = nil
+      end
+      clientData['firstresponse'] = params['firstresponse']
+      clientData.save
+    end
   end
 
   status 200
