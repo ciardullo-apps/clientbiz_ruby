@@ -1,6 +1,6 @@
-function loadAppointments(clientId) {
+function loadClients() {
   $.ajax({
-    url: "appointments/" + clientId,
+    url: "client.html",
     statusCode: {
       400: function(data) {
         $("#outcome").html(data.responseText);
@@ -17,11 +17,12 @@ function loadAppointments(clientId) {
     }
   });
 
+  return false;
 }
 
 function loadClientData(clientId) {
   $.ajax({
-    url: "client/" + clientId,
+    url: "client/" + clientId + '.html',
     statusCode: {
       400: function(data) {
         $("#outcome").html(data.responseText);
@@ -41,9 +42,9 @@ function loadClientData(clientId) {
   return false;
 }
 
-function loadClients() {
+function loadAppointments(clientId) {
   $.ajax({
-    url: "client",
+    url: "appointments/" + clientId + '.html',
     statusCode: {
       400: function(data) {
         $("#outcome").html(data.responseText);
@@ -60,12 +61,11 @@ function loadClients() {
     }
   });
 
-  return false;
 }
 
 function loadReceivables() {
   $.ajax({
-    url: "receivables",
+    url: "receivables.html",
     statusCode: {
       400: function(data) {
         $("#outcome").html(data.responseText);

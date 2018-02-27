@@ -48,31 +48,71 @@ get '/' do
 end
 
 get '/client' do
-  @clients = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  content_type 'application/json'
+  clientsData = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  clientsData.to_json # Convert ActiveRecord::Relation to JSON
+end
+
+get '/client.html' do
+  status, headers, body = call env.merge(
+    "PATH_INFO" => '/client'
+  )
+
+  @clients = JSON.parse(body[0])  # Add key :symbolize_names => true to convert keys from strings to symbols
   @topics = Topic.order(id: :asc);
   @appointments = {}
 
   erb :"client-list", :layout => false, :content_type => "text/html", :status => 200
 end
 
-get '/client/:clientId' do
+get %r{/client/([\d]+).html} do
+  status, headers, body = call env.merge(
+    "PATH_INFO" => '/client/' + params[:captures].first
+  )
+
+  @formData = JSON.parse(body[0])
   @topics = Topic.order(id: :asc);
-
-  clientData = Clientele.find(params[:clientId])
-  @formData = clientData.attributes
-  puts @formData
-
-  @clientSelected = true
   erb :"edit-client", :layout => false, :content_type => "text/html", :status => 200
 end
 
-get '/appointments/:clientId' do
+get '/client/:clientId' do
+  content_type 'application/json'
+  clientData = Clientele.find(params[:clientId])
+  clientData.to_json
+end
+
+get %r{/appointments/([\d]+).html} do
+  status, headers, body = call env.merge(
+    "PATH_INFO" => '/appointments/' + params[:captures].first
+  )
+
+  @appointments = JSON.parse(body[0])
   @topics = Topic.order(id: :asc);
-  @appointments = Appointment.where("client_id = ?", params[:clientId])
-  @client = Clientele.find(params[:clientId])
+  @client = Clientele.find(params[:captures].first)
 
   erb :"appointment-list", :layout => false, :content_type => "text/html", :status => 200
-  # { :appointments => appointmentData }.to_json
+end
+
+get '/appointments/:clientId' do
+  content_type 'application/json'
+  appointmentData = Appointment.where("client_id = ?", params[:clientId])
+  appointmentData.to_json
+end
+
+get '/receivables.html' do
+  status, headers, body = call env.merge(
+    "PATH_INFO" => '/receivables'
+  )
+  @receivables = JSON.parse(body[0])
+  @paiddate = Time.new.iso8601.slice(0,10)
+
+  erb :"receivables", :layout => false, :content_type => "text/html", :status => 200
+end
+
+get '/receivables' do
+  content_type 'application/json'
+  receivables = Appointment.select("clientele.firstname, clientele.lastname, topic.name as topicname, #{Appointment.table_name}.*").joins(:clientele).joins(:topic).where('paid is null')
+  receivables.to_json
 end
 
 get '/newAppointment' do
@@ -103,13 +143,6 @@ post '/saveAppointment' do
   status 200
   content_type 'application/json'
   { :appointmentId => newAppt.id }.to_json
-end
-
-get '/receivables' do
-  @receivables = Appointment.select("clientele.firstname, clientele.lastname, topic.name as topicname, #{Appointment.table_name}.*").joins(:clientele).joins(:topic).where('paid is null')
-  @paiddate = Time.new.iso8601.slice(0,10)
-
-  erb :"receivables", :layout => false, :content_type => "text/html", :status => 200
 end
 
 post '/updatePaidDate' do

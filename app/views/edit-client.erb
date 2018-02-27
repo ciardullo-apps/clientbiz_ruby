@@ -53,11 +53,11 @@
         </tr>
         <tr>
           <td style="align=right;">First contacted:</td>
-          <td style="align:left;"><input type="datetime-local" name="firstcontact" value="<%= (@formData['firstcontact'] ? @formData['firstcontact'].iso8601.slice(0,16) : '') %>" /></td>
+          <td style="align:left;"><input type="datetime-local" name="firstcontact" value="<%= (@formData['firstcontact'] ? @formData['firstcontact'].slice(0,16) : '') %>" /></td>
         </tr>
         <tr>
           <td style="align=right;">First responded:</td>
-          <td style="align:left;"><input type="datetime-local" name="firstresponse" value="<%= @formData['firstresponse'].iso8601.slice(0,16) %>" /></td>
+          <td style="align:left;"><input type="datetime-local" name="firstresponse" value="<%= @formData['firstresponse'].slice(0,16) %>" /></td>
         </tr>
         <tr>
           <td style="align=right;">Solicited:</td>

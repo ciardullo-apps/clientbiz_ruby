@@ -31,13 +31,13 @@
         <% @appointments.each do |appointment| %>
         <tr>
           <td style="align:left;">
-            <%= @topics[appointment.topic_id - 1].name %>
+            <%= @topics[appointment['topic_id'] - 1].name %>
           </td>
-          <td style="align:left;"><%= appointment.starttime.strftime("%-m/%-d/%Y, %l:%M:%S %p") %></td>
-          <td style="align:left;"><%= appointment.duration %></td>
-          <td style="align:left;"><%= appointment.rate.floor %></td>
-          <td style="align:left;"><%= appointment.billingpct %></td>
-          <td style="align:left;"><%= appointment.paid ? appointment.paid.strftime("%-m/%-d/%Y") : "" %></td>
+          <td style="align:left;"><%= appointment['starttime'].to_time.strftime("%-m/%-d/%Y, %l:%M:%S %p") %></td>
+          <td style="align:left;"><%= appointment['duration'] %></td>
+          <td style="align:left;"><%= appointment['rate'].to_f.floor %></td>
+          <td style="align:left;"><%= appointment['billingpct'] %></td>
+          <td style="align:left;"><%= appointment['paid'] ? appointment['paid'].to_date.strftime("%-m/%-d/%Y") : "" %></td>
           <% end %>
         </tr>
       </tbody>

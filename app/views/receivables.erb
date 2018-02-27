@@ -33,16 +33,16 @@
           </td>
           <% @receivables.each do |receivable| %>
           <tr>
-            <td style="align:left;"><%= receivable.id %></td>
-            <td style="align:left;"><%= receivable.firstname %></td>
-            <td style="align:left;"><%= receivable.lastname %></td>
-            <td style="align:left;"><%= receivable.topicname %></td>
-            <td style="align:left;"><%= receivable.starttime.strftime("%-m/%-d/%Y, %l:%M:%S %p") %></td>
-            <td style="align:left;"><%= receivable.duration %></td>
-            <td style="align:left;"><%= receivable.rate.floor %></td>
-            <td style="align:left;"><%= receivable.billingpct %></td>
-            <td style="align:left;">$ <%= "%.2f" % (receivable.rate * (receivable.duration / 60.to_f) * receivable.billingpct) %></td>
-            <td style="align:left;"><a href onclick="getPaid(<%= receivable.id %>); return false;">Mark Paid</a></td>
+            <td style="align:left;"><%= receivable['id'] %></td>
+            <td style="align:left;"><%= receivable['firstname'] %></td>
+            <td style="align:left;"><%= receivable['lastname'] %></td>
+            <td style="align:left;"><%= receivable['topicname'] %></td>
+            <td style="align:left;"><%= receivable['starttime'].to_time.strftime("%-m/%-d/%Y, %l:%M:%S %p") %></td>
+            <td style="align:left;"><%= receivable['duration'] %></td>
+            <td style="align:left;"><%= receivable['rate'].to_f.floor %></td>
+            <td style="align:left;"><%= receivable['billingpct'] %></td>
+            <td style="align:left;">$ <%= "%.2f" % (receivable['rate'].to_f * (receivable['duration'].to_i / 60.to_f) * receivable['billingpct'].to_f) %></td>
+            <td style="align:left;"><a href onclick="getPaid(<%= receivable['id'] %>); return false;">Mark Paid</a></td>
           </tr>
           <% end %>
         </tr>
