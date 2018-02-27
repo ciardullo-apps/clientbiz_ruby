@@ -24,6 +24,7 @@ class Appointment < ActiveRecord::Base
   belongs_to :topic, :foreign_key => "topic_id"
 end
 
+# TODO Add route for topics
 class Topic < ActiveRecord::Base
   self.table_name = "topic"
   has_many :appointments, :foreign_key => "topic_id"
@@ -206,7 +207,7 @@ post '/saveClient' do
         clientData['firstcontact'] = nil
       end
       clientData['firstresponse'] = params['firstresponse']
-      clientData.save
+      clientData.save!
     end
   end
 
