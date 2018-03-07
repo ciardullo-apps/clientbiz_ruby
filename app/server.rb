@@ -50,7 +50,21 @@ end
 
 get '/client' do
   content_type 'application/json'
-  clientsData = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  sortColumn = params['sortColumn']
+  sortOrder = params['sortOrder']
+
+  # clientsData = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  if sortColumn.to_s.empty? then
+    sortColumn = 'lastapptdate'
+  end
+
+  if sortOrder.to_s.empty?
+    sortOrder = 'desc'
+  end
+
+  puts sortColumn.class
+  puts sortOrder.class
+  clientsData = ClientView.order(sortColumn => sortOrder)
   clientsData.to_json # Convert ActiveRecord::Relation to JSON
 end
 
@@ -158,7 +172,7 @@ post '/updatePaidDate' do
 
   status :ok
   content_type :json
-  { :rowsAffected => 1 }.to_json
+  { :updatedAppointmentId => appointment.id }.to_json
 end
 
 get '/newClient' do
@@ -166,7 +180,7 @@ get '/newClient' do
 
   @formData = { }
   @formData['topicId'] = 2
-  @formData['firstcontact'] = Time.new.change(min: 0).advance(hours: 1)
+  @formData['firstcontact'] = Time.new.change(min: 0).advance(hours: 1).iso8601.slice(0,16)
   @formData['firstresponse'] = @formData['firstcontact']
   @formData['solicited'] = 1
 

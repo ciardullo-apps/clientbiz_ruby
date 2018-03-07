@@ -1,6 +1,13 @@
-function loadClients() {
+var sortOrders =  [ 'asc', 'desc' ];
+var sortOrderIndex = 1;
+
+function loadClients(sortColumn) {
   $.ajax({
     url: "client.html",
+    data: {
+      'sortColumn': sortColumn,
+      'sortOrder': sortOrders[(sortOrderIndex ^= 1)]
+    },
     statusCode: {
       400: function(data) {
         $("#outcome").html(data.responseText);

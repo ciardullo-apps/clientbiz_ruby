@@ -19,14 +19,14 @@
   <table class="table table-sm">
     <thead>
       <tr>
-        <th>#</th>
-        <th>First</th>
-        <th>Last</th>
-        <th>Contact</th>
-        <th>Timezone</th>
-        <th>Solicited</th>
-        <th># Appointments</th>
-        <th>Last Appointment</th>
+        <th><a href onclick="loadClients('id'); return false;">#</a></th>
+        <th><a href onclick="loadClients('firstname'); return false;">First</a></th>
+        <th><a href onclick="loadClients('lastname'); return false;">Last</a></th>
+        <th><a href onclick="loadClients('contactname'); return false;">Contact</a></th>
+        <th><a href onclick="loadClients('timezone'); return false;">Timezone</a></th>
+        <th><a href onclick="loadClients('solicited'); return false;">Solicited</a></th>
+        <th><a href onclick="loadClients('numappts'); return false;"># Appointments</a></th>
+        <th><a href onclick="loadClients('lastapptdate'); return false;">Last Appointment</a></th>
       </tr>
     </thead>
     <tbody>
@@ -37,7 +37,7 @@
         <td><%= customer['lastname'] %></a></td>
         <td><%= customer['contactname'] %></a></td>
         <td><%= customer['timezone'] %></a></td>
-        <td><%= customer['solicited'] %></a></td>
+        <td><input type="checkbox" disabled="true" <%= customer['solicited'] ? "CHECKED" : "" %> /></a></td>
         <td><a href onclick="loadAppointments(<%= customer['id'] %>); return false;"><%= customer['numappts'] %></a></td>
         <td><%= customer['lastapptdate'] %></a></td>
       </tr>
