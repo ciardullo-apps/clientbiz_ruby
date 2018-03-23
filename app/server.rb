@@ -139,7 +139,7 @@ get '/newAppointment' do
   @formData['nextHour'] = Time.new.change(min: 0).advance(hours: 1).iso8601.slice(0,16)
   @formData['duration'] = 60
   @formData['rate'] = 60
-  @formData['billingpct'] = 0.75
+  @formData['billingpct'] = 0.80
 
   # nextHour.setMinutes(0);
   # nextHour.setHours(nextHour.getHours() + 1);

@@ -21,7 +21,7 @@
           <td style="align:left;">
             <select name="client_id">
               <% @clients.each do |client| %>
-                <option value="<%= client.id %>" <%= client.id == 0 ? "SELECTED" : "" %>><%= client.firstname %></option>
+                <option value="<%= client.id %>" <%= client.id == 0 ? "SELECTED" : "" %>><%= client.firstname %> <%= client.lastname %></option>
               <% end %>
             </select>
           </td>
