@@ -26,6 +26,7 @@
         <th><a href onclick="loadClients('timezone'); return false;">Timezone</a></th>
         <th><a href onclick="loadClients('solicited'); return false;">Solicited</a></th>
         <th><a href onclick="loadClients('numappts'); return false;"># Appointments</a></th>
+        <th><a href onclick="loadClients('revenue'); return false;">Revenue</a></th>
         <th><a href onclick="loadClients('lastapptdate'); return false;">Last Appointment</a></th>
       </tr>
     </thead>
@@ -39,7 +40,8 @@
         <td><%= customer['timezone'] %></a></td>
         <td><input type="checkbox" disabled="true" <%= customer['solicited'] ? "CHECKED" : "" %> /></a></td>
         <td><a href onclick="loadAppointments(<%= customer['id'] %>); return false;"><%= customer['numappts'] %></a></td>
-        <td><%= customer['lastapptdate'] %></a></td>
+        <td>$ <%= sprintf("%.2f", customer['revenue']) %></td><%# TODO Add comma separator %>
+        <td><%= customer['lastapptdate'] %></td>
       </tr>
       <% end %>
     </tbody>
