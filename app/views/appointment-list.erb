@@ -22,6 +22,7 @@
           <th style="align=center;">Hourly Rate</td>
           <th style="align=center;">Billing %</td>
           <th style="align=center;">Date paid</td>
+          <th style="align=center;">&nbsp;</td>
         </tr>
       </thead>
       <tbody>
@@ -38,6 +39,28 @@
           <td style="align:left;"><%= appointment['rate'].to_f.floor %></td>
           <td style="align:left;"><%= appointment['billingpct'] %></td>
           <td style="align:left;"><%= appointment['paid'] ? appointment['paid'].to_date.strftime("%-m/%-d/%Y") : "" %></td>
+          <td>&nbsp;<button <%= appointment['description'] ? "" : "disabled" %> type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#descModal<%= appointment['id']%>" >Description</button>
+              <!-- Modal -->
+              <div class="modal fade" id="descModal<%= appointment['id'] %>" role="dialog">
+                  <div class="modal-dialog">
+
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h4 class="modal-title">Appointment Summary</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+                          <div class="modal-body">
+                              <span><%= appointment['description'] %></<span>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                      </div>
+
+                  </div>
+              </div>
+          </td>
           <% end %>
         </tr>
       </tbody>
