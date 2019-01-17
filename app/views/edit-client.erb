@@ -30,7 +30,7 @@
           <td style="align:left;">
             <select name="topic_id">
               <% @topics.each do |topic| %>
-                <option value="<%= topic.id %>" <%= topic.id == 2 ? "SELECTED" : "" %>><%= topic.name %></option>
+                <option value="<%= topic.id %>" <%= topic.id == @formData['topicId'] ? "SELECTED" : "" %>><%= topic.name %></option>
               <% end %>
             </select>
           </td>
@@ -53,11 +53,11 @@
         </tr>
         <tr>
           <td style="align=right;">First contacted:</td>
-          <td style="align:left;"><input type="datetime-local" name="firstcontact" value="<%= (@formData['firstcontact'] ? @formData['firstcontact'] : '') %>" /></td>
+          <td style="align:left;"><input type="datetime-local" name="firstcontact" value="<%= (@formData['firstcontact'] ? @formData['firstcontact'].slice(0,16) : '') %>" /></td>
         </tr>
         <tr>
           <td style="align=right;">First responded:</td>
-          <td style="align:left;"><input type="datetime-local" name="firstresponse" value="<%= @formData['firstresponse'] %>" /></td>
+          <td style="align:left;"><input type="datetime-local" name="firstresponse" value="<%= @formData['firstresponse'].slice(0,16) %>" /></td>
         </tr>
         <tr>
           <td style="align=right;">Solicited:</td>

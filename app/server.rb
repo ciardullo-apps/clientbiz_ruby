@@ -93,7 +93,13 @@ end
 get '/client/:clientId' do
   content_type 'application/json'
   clientData = Clientele.find(params[:clientId])
-  clientData.to_json
+  lastAppointment = Appointment
+  .order("topic_id DESC")
+    .where("client_id = :i", { i: params[:clientId] })
+    .first()
+  topicId = lastAppointment.topic_id
+  puts("- - - - - GOT #{topicId}")
+  clientData.as_json.merge(:topicId => topicId).to_json
 end
 
 get %r{/appointments/([\d]+).html} do
