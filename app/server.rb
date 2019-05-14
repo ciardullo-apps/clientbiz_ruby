@@ -235,3 +235,41 @@ post '/saveClient' do
   content_type 'application/json'
   { :clientId => clientId }.to_json
 end
+
+get '/monthly-activity.html' do
+  status, headers, body = call env.merge(
+    "PATH_INFO" => '/monthlyActivity'
+  )
+  @reportData = JSON.parse(body[0])
+
+  erb :"monthly-activity", :layout => false, :content_type => "text/html", :status => 200
+end
+
+get '/monthlyActivity' do
+  content_type 'application/json'
+  sortColumn = params['sortColumn']
+  sortOrder = params['sortOrder']
+
+  # clientsData = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  if sortColumn.to_s.empty? then
+    sortColumn = 'monthOfYear'
+  end
+
+  if sortOrder.to_s.empty?
+    sortOrder = 'desc'
+  end
+
+  puts sortColumn
+  puts sortOrder
+  reportData = Appointment
+    .select("DATE_FORMAT(starttime, '%Y-%m-01') as monthOfYear, " +
+      "COUNT(distinct client_id) as totalClients, " +
+      "COUNT(*) as totalAppointments, " +
+      "SUM(duration / 60) as totalHours, " +
+      "SUM(rate * (duration / 60) * billingpct) as totalRevenue, " +
+      "SUM(rate * (duration / 60) * billingpct)/ sum(duration / 60) as averageRate ")
+    .group("DATE_FORMAT(starttime, '%Y-%m-01')")
+    .order("#{sortColumn} #{sortOrder}")
+    .as_json(:except => :id) # remove id from result set
+  reportData.to_json # Convert ActiveRecord::Relation to JSON
+end

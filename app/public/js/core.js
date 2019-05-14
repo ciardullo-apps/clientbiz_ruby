@@ -178,3 +178,29 @@ function saveClient() {
         console.log(data);
       });
 }
+
+function loadMonthlyActivity(sortColumn) {
+    $.ajax({
+      url: "monthly-activity.html",
+      data: {
+        'sortColumn': sortColumn,
+        'sortOrder': sortOrders[(sortOrderIndex ^= 1)]
+      },
+      statusCode: {
+        400: function(data) {
+          $("#outcome").html(data.responseText);
+        }
+      },
+      success: function(data) {
+        $("#main-view").html(data);
+
+        return false;
+      },
+      error: function(data) {
+        console.log("ERROR");
+        console.log(data);
+      }
+    });
+
+    return false;
+}
