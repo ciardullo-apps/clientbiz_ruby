@@ -242,7 +242,7 @@ get '/monthly-activity.html' do
   )
   @reportData = JSON.parse(body[0])
 
-  erb :"monthly-activity", :layout => false, :content_type => "text/html", :status => 200
+  erb :"reports/monthly-activity", :layout => false, :content_type => "text/html", :status => 200
 end
 
 get '/monthlyActivity' do
