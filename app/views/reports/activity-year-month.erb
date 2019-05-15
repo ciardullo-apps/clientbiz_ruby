@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h1 class="h2">Activity</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group mr-2">
+      <button class="btn btn-sm btn-outline-secondary">Share</button>
+      <button class="btn btn-sm btn-outline-secondary">Export</button>
+    </div>
+    <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+      <span data-feather="calendar"></span>
+      Recent
+    </button>
+  </div>
+</div>
+
+<div id="activityYearMonth" class="table-responsive">
+    <table id="activityYearMonthTable" class="table table-sm">
+      <thead>
+        <tr>
+          <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'appointment.id'); return false;">Appointment ID</a></th>
+          <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'firstname'); return false;">Client First</a></th>
+          <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'lastname'); return false;">Client Last</a></th>
+          <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'topicname'); return false;">Topic</a></th>
+            <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'starttime'); return false;">Start time</a></a></th>
+            <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'duration'); return false;">Duration</th>
+          <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'rate'); return false;">Hourly Rate</a></th>
+          <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'billingpct'); return false;">Billing %</a></th>
+          <th style="align=center;">Amount Due</th>
+          <th style="align=center;"><a href onclick="loadActivityYearMonth(<%= params[:year] %>, <%= params[:month] %>, 'paid'); return false;">Paid</a></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <tr>
+              <td colspan="8" style="text-align:right">&nbsp;</td>
+              <td style="text-align:right">
+                  <b id="outstanding">$ <%= "%.2f" % @reportData.map {|s| (s['rate'].to_f * s['duration'].to_i / 60.to_f * s['billingpct'].to_f)}.reduce(0, :+) %></b>
+              </td>
+              <td style="text-align:right">&nbsp;</td>
+          </tr>
+          <% @reportData.each do |data| %>
+          <tr>
+            <td style="text-align:left;"><%= data['id'] %></td>
+            <td style="text-align:left;"><%= data['firstname'] %></td>
+            <td style="text-align:left;"><%= data['lastname'] %></td>
+            <td style="text-align:left;"><%= data['topicname'] %></td>
+            <td style="text-align:left;"><%= data['starttime'].to_time.strftime("%-m/%-d/%Y, %l:%M:%S %p") %></td>
+            <td style="text-align:left;"><%= data['duration'] %></td>
+            <td style="text-align:left;"><%= data['rate'].to_f.floor %></td>
+            <td style="text-align:left;"><%= data['billingpct'] %></td>
+            <td style="text-align:right;">$ <%= "%.2f" % (data['rate'].to_f * (data['duration'].to_i / 60.to_f) * data['billingpct'].to_f) %></td>
+            <td style="text-align:left;"><%= data['paid'] %></td>
+          </tr>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+
+</div>

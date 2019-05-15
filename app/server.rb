@@ -273,3 +273,37 @@ get '/monthlyActivity' do
     .as_json(:except => :id) # remove id from result set
   reportData.to_json # Convert ActiveRecord::Relation to JSON
 end
+
+get '/activity-year-month.html/:year/:month' do
+  status, headers, body = call env.merge(
+    "PATH_INFO" => "/activityYearMonth/#{params[:year]}/#{params[:month]}"
+  )
+  @reportData = JSON.parse(body[0])
+
+  erb :"reports/activity-year-month", :layout => false, :content_type => "text/html", :status => 200
+end
+
+get '/activityYearMonth/:year/:month' do
+  content_type 'application/json'
+  sortColumn = params['sortColumn']
+  sortOrder = params['sortOrder']
+
+  # clientsData = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  if sortColumn.to_s.empty? then
+    sortColumn = 'id'
+  end
+
+  if sortOrder.to_s.empty?
+    sortOrder = 'desc'
+  end
+
+  puts sortColumn
+  puts sortOrder
+  reportData = Appointment
+    .select("clientele.firstname, clientele.lastname, topic.name as topicname, #{Appointment.table_name}.*")
+    .joins(:clientele)
+    .joins(:topic)
+    .where('YEAR(starttime) = ? AND MONTH(starttime) = ?', params[:year], params[:month])
+    .order("#{sortColumn} #{sortOrder}")
+  reportData.to_json # Convert ActiveRecord::Relation to JSON
+end

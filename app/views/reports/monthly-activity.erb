@@ -27,12 +27,12 @@
     <tbody>
       <% @reportData.each do |data| %>
       <tr>
-        <td><%= data['monthOfYear'] %></a></td>
-        <td><%= data['totalClients'] %></a></td>
-        <td><%= data['totalAppointments'] %></a></td>
-        <td><%= "%.2f" % data['totalHours'] %></a></td>
-        <td>$ <%= "%.2f" % data['totalRevenue'] %></a></td>
-        <td>$ <%= "%.2f" % data['averageRate'] %></a></td>
+        <td><a href="#" onclick="loadActivityYearMonth(<%= data['monthOfYear'][0..3] %>, <%= data['monthOfYear'][5..6] %>, 'appointment.id'); return false;"><%= data['monthOfYear'] %></a></td>
+        <td><%= data['totalClients'] %></td>
+        <td><%= data['totalAppointments'] %></td>
+        <td><%= "%.2f" % data['totalHours'] %></td>
+        <td>$ <%= "%.2f" % data['totalRevenue'] %></td>
+        <td>$ <%= "%.2f" % data['averageRate'] %></td>
       </tr>
       <% end %>
     </tbody>

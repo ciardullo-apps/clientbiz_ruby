@@ -204,3 +204,30 @@ function loadMonthlyActivity(sortColumn) {
 
     return false;
 }
+
+function loadActivityYearMonth(year, month, sortColumn) {
+  console.log("HI");
+    $.ajax({
+      url: "activity-year-month.html/" + year + "/" + month,
+      data: {
+        'sortColumn': sortColumn,
+        'sortOrder': sortOrders[(sortOrderIndex ^= 1)]
+      },
+      statusCode: {
+        400: function(data) {
+          $("#outcome").html(data.responseText);
+        }
+      },
+      success: function(data) {
+        $("#main-view").html(data);
+
+        return false;
+      },
+      error: function(data) {
+        console.log("ERROR");
+        console.log(data);
+      }
+    });
+
+    return false;
+}
