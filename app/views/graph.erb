@@ -1,0 +1,36 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+  <h1 class="h2">Revenue by Topic</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group mr-2">
+      <button class="btn btn-sm btn-outline-secondary">Share</button>
+      <button class="btn btn-sm btn-outline-secondary">Export</button>
+    </div>
+    <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+      <span data-feather="calendar"></span>
+      Recent
+    </button>
+  </div>
+</div>
+<div style="width:800px;height:500px">
+    <canvas id="myChart" style="width:600px;height:600px"></canvas>
+    <script type="text/javascript">
+        let ctx = document.getElementById('myChart').getContext('2d');
+        let myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: <%=@labels%>,
+                datasets: [{
+                    label: 'Revenue by Topic',
+                    data: <%=@data%>
+                }]
+            },
+            options: {
+                responsive: false,
+                legend: {
+                    display: true,
+                    position: 'left'
+                }
+            }
+        });
+        </script>
+</div>

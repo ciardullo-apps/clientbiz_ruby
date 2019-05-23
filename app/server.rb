@@ -307,3 +307,23 @@ get '/activityYearMonth/:year/:month' do
     .order("#{sortColumn} #{sortOrder}")
   reportData.to_json # Convert ActiveRecord::Relation to JSON
 end
+
+get '/revenue-by-topic.html' do
+  status, headers, body = call env.merge(
+    "PATH_INFO" => "/revenueByTopic"
+  )
+
+  @labels = JSON.parse(body[0]).map { |rbt| rbt['topicName']}
+  @data = JSON.parse(body[0]).map { |rbt| rbt['pctOfTotal']}
+
+  erb :"graph", :layout => false, :content_type => "text/html", :status => 200
+end
+
+get '/revenueByTopic' do
+  content_type 'application/json'
+  reportData = Appointment
+    .select("name as topicName, sum(rate * (duration / 60) * billingpct) as totalRevenue, convert(sum(rate * (duration / 60) * billingpct) / sum(sum(rate * (duration / 60) * billingpct)) over () * 100, decimal(9,2)) as pctOfTotal")
+    .joins(:topic)
+    .group("name")
+  reportData.to_json # Convert ActiveRecord::Relation to JSON
+end
