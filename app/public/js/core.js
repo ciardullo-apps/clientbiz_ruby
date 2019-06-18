@@ -252,3 +252,36 @@ function loadRevenueByTopic() {
 
     return false;
 }
+
+function loadRevenueByTopicYear(year) {
+    $.ajax({
+        method: 'GET',
+        url: "revenue-by-topic/" + (year ? year : ""),
+      })
+      .done(function(responseData) {
+        let ctx = document.getElementById('myChart').getContext('2d');
+        myChart.destroy();
+        myChart = new Chart(ctx, {
+            'type': 'pie',
+            'data': {
+                'labels': responseData.map(function(data) {
+                  return data.name;
+                }),
+                'datasets': [{
+                    'label': 'Revenue by Topic',
+                    'data': responseData.map(function(data) {
+                      return data.pctOfTotal;
+                    })
+                }]
+            },
+            'options': {
+                'responsive': true,
+                'legend': {
+                    'display': true,
+                    'position': 'left'
+                }
+            }
+        });
+        myChart.update();
+      });
+}

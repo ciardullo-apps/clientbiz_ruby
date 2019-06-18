@@ -310,20 +310,39 @@ end
 
 get '/revenue-by-topic.html' do
   status, headers, body = call env.merge(
-    "PATH_INFO" => "/revenueByTopic"
+    "PATH_INFO" => "/revenue-by-topic/"
   )
 
-  @labels = JSON.parse(body[0]).map { |rbt| rbt['topicName']}
+  @labels = JSON.parse(body[0]).map { |rbt| rbt['name']}
   @data = JSON.parse(body[0]).map { |rbt| rbt['pctOfTotal']}
+
+  status, headers, body = call env.merge(
+    "PATH_INFO" => "/revenue-years"
+  )
+
+  @revenueYears = JSON.parse(body[0])
+  # @revenueYears.unshift("revenueYear" => "ALL") # ADD TO BEGINNING OF ARRAY
+  # puts @revenueYears.class # ARRAY
 
   erb :"graph", :layout => false, :content_type => "text/html", :status => 200
 end
 
-get '/revenueByTopic' do
+get '/revenue-by-topic/:year?' do
   content_type 'application/json'
   reportData = Appointment
-    .select("name as topicName, sum(rate * (duration / 60) * billingpct) as totalRevenue, convert(sum(rate * (duration / 60) * billingpct) / sum(sum(rate * (duration / 60) * billingpct)) over () * 100, decimal(9,2)) as pctOfTotal")
+    .select("name, sum(rate * (duration / 60) * billingpct) as totalRevenue, convert(sum(rate * (duration / 60) * billingpct) / sum(sum(rate * (duration / 60) * billingpct)) over () * 100, decimal(9,2)) as pctOfTotal")
     .joins(:topic)
     .group("name")
-  reportData.to_json # Convert ActiveRecord::Relation to JSON
+  reportData = reportData.where("year(starttime) = ?", params[:year]) if params[:year].present?
+  reportData = reportData.as_json(:except => :id)
+  reportData.to_json
+end
+
+get '/revenue-years' do
+  content_type 'application/json'
+  data = Appointment
+    .select("distinct year(starttime) as revenueYear")
+    .order("revenueYear")
+    .as_json(:except => :id)
+  data.to_json
 end
