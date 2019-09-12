@@ -137,7 +137,7 @@ get '/receivables' do
 end
 
 get '/newAppointment' do
-  @clients = ClientView.order(lastapptyearmonth: :desc, numappts: :desc)
+  @clients = ClientView.order(lastapptdate: :desc, numappts: :desc)
   @topics = Topic.order(id: :asc);
 
   # Advance to next hour
