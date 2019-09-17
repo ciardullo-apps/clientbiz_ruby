@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'thin'
 require 'sinatra/activerecord'
 require 'json'
 
@@ -42,29 +41,7 @@ class ClientTopic < ActiveRecord::Base
   has_many :topic, :foreign_key => "topic_id"
 end
 
-class App < ::Thin::Backends::TcpServer
-  def initialize(host, port, options)
-    super(host, port)
-    @ssl = true
-    @ssl_options = options
-  end
-end
-
-configure do
-  set :environment, :production
-  set :bind, '0.0.0.0'
-  set :port, 4567
-  set :server, "thin"
-  class << settings
-    def server_settings
-      {
-        :backend          => App,
-        :private_key_file => "/opt/certs/spiaggia.key",
-        :cert_chain_file  => "/opt/certs/spiaggia.crt",
-        :verify_peer      => false
-      }
-    end
-  end
+class App < Sinatra::Application
 end
 
 get '/' do
